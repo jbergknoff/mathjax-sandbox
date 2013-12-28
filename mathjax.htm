@@ -1,0 +1,77 @@
+<html>
+<head>
+<title>MathJax Sandbox</title>
+<style>
+body { font-family: "Open Sans", sans-serif; }
+hr { margin: 2em auto; }
+textarea { width: 100%; height: 10em; }
+div.link-container { display: none; margin-top: 3em; font-size: 70%; }
+</style>
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config
+(
+	{
+		"tex2jax":
+		{
+			"inlineMath": [ [ '$', '$' ] ]
+		}
+	}
+);
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript">
+function Render()
+{
+	var MathJaxContent = $("textarea").val();
+	$("#math-container").text(MathJaxContent);
+	MathJax.Hub.Queue([ "Typeset", MathJax.Hub, "math-container" ]);
+
+	if (MathJaxContent) $("div.link-container").show();
+	else $("div.link-container").hide();
+
+	var Encoded = encodeURIComponent(btoa(MathJaxContent));
+	$("input.link").val(window.location.origin + window.location.pathname + "#" + Encoded);
+	window.location.hash = Encoded;
+}
+
+function Initialize()
+{
+	$("button").click(Render);
+	$(document).keyup
+	(
+		function(E)
+		{
+			// Render upon Ctrl + Enter.
+			if (E.keyCode == 13 && E.ctrlKey)
+				Render();
+		}
+	);
+
+	$("input.link").click(function() { $(this).select(); });
+
+	var Data = decodeURIComponent(window.location.hash.slice(1));
+	try { Data = atob(Data); }
+	catch (E) { Data = null; }
+
+	if (Data) $("textarea").val(Data);
+	Render();
+}
+
+$(Initialize);
+</script>
+</head>
+<body>
+<div>MathJax:</div>
+<textarea></textarea>
+<button>Render</button> (or press <code>Ctrl + Enter</code>)
+<hr>
+<div id="math-container"></div>
+
+<div class="link-container">
+	<span>link to this MathJax snippet:</span>
+	<input class="link">
+</div>
+</body>
+</html>
