@@ -25,7 +25,7 @@ MathJax.Hub.Config
 function Render()
 {
 	var MathJaxContent = $("textarea").val();
-	$("#math-container").text(MathJaxContent);
+	$("#math-container").html(MathJaxContent.replace(/\n/g, "<br>"));
 	MathJax.Hub.Queue([ "Typeset", MathJax.Hub, "math-container" ]);
 
 	if (MathJaxContent) $("div.link-container").show();
